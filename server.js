@@ -13,7 +13,7 @@ io.on('connection', function(socket){
 		console.log('Message Received: ', Message.text);
 
 		// Broadcast message to all connected user including the sender.
-		io.emit('message', Message);
+		//io.emit('message', Message);
 
 		// Brodcast message to all connected user excluding the sender.
 		socket.broadcast.emit('message', Message);
