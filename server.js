@@ -19,7 +19,7 @@ io.on('connection', function(socket){
 		socket.broadcast.emit('message', Message);
 	});
 
-	socket.emit('message', {
+	socket.emit('Welcomemessage', {
 		text: 'Welcome to Chat application !!!'
 	})
 });

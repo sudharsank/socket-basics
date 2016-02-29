@@ -4,8 +4,14 @@ socket.on('connect', function() {
 	console.log('Connected to the server !!!');
 });
 
+socket.on('Welcomemessage', function(message) {
+	console.log('Welcome message: ', message.text);
+	$(".welcomeMessage").html(message.text);
+});
+
 socket.on('message', function(message) {
-	console.log('New message: ', message.text);
+	console.log('message: ', message.text);
+	$(".messages").append('<p>' + message.text + '</p>');
 });
 
 var $form = jQuery("#frmMessage");
