@@ -4,8 +4,16 @@ var socket = io();
 
 //console.log(username + ' wants to join the room ' + room);
 
+$(".room-title").html(room);
+
 socket.on('connect', function() {
 	console.log('Connected to the server !!!');
+
+	// Once the User joined the room, it emits the following event
+	socket.emit('joinRoom', {
+		name: username,
+		room: room
+	});
 });
 
 socket.on('Welcomemessage', function(message) {
