@@ -12,7 +12,7 @@ io.on('connection', function(socket){
 	console.log('User connected using socket.io!');
 
 	socket.on('message', function(Message){
-		console.log('Message Received: ', Message.text);
+		console.log('Message Received: ', Message);
 
 		// Broadcast message to all connected user including the sender.
 		Message.timeStamp = moment().valueOf();
@@ -23,6 +23,7 @@ io.on('connection', function(socket){
 	});
 
 	socket.emit('Welcomemessage', {
+		name: 'System',
 		text: 'Welcome to Chat application !!!',
 		timeStamp: moment().valueOf()
 	})
