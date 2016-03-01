@@ -13,6 +13,20 @@ var clientInfo = {};
 io.on('connection', function(socket) {
 	console.log('User connected using socket.io!');
 
+	// Once the user left the room the message wil be sent to all the users.
+	socket.on('disconnect', function(){
+		var userData = clientInfo[socket.id];
+		console.log('Left the room: ', userData.name + ' - ' + userData.room);
+		// To remove the user binding from the room
+		socket.leave(userData.room);
+		io.to(userData.room).emit('message', {
+			name: 'System',
+			text: userData.name + ' has left !!!',
+			timeStamp: moment().valueOf()
+		});
+		delete clientInfo[socket.id];
+	});
+
 	socket.on('joinRoom', function(req) {
 		console.log('Joined the room: ', req.name + ' - ' + req.room);
 		clientInfo[socket.id] = req;
