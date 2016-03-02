@@ -10,11 +10,35 @@ app.use(express.static(__dirname + '/public'));
 // To use the current user info on the message event.
 var clientInfo = {};
 
+// sends current users to provided socket
+function sendCurrentUsers(socket) {
+	// Current user info
+	var info = clientInfo[socket.id];
+	var users = [];
+
+	if (typeof info === 'undefined') {
+		return;
+	}
+
+	// It takes object and return all the attributes as an array
+	Object.keys(clientInfo).forEach(function(socketID){
+		var userInfo = clientInfo[socketID];
+		if(info.room === userInfo.room)
+			users.push(userInfo.name);
+	});
+
+	socket.emit('message', {
+		name: 'System',
+		text: 'Current Users: ' + users.join(', '), // This will join all the arrays with ', '
+		timeStamp: moment().valueOf()
+	})
+}
+
 io.on('connection', function(socket) {
 	console.log('User connected using socket.io!');
 
 	// Once the user left the room the message wil be sent to all the users.
-	socket.on('disconnect', function(){
+	socket.on('disconnect', function() {
 		var userData = clientInfo[socket.id];
 		console.log('Left the room: ', userData.name + ' - ' + userData.room);
 		// To remove the user binding from the room
@@ -43,14 +67,18 @@ io.on('connection', function(socket) {
 	socket.on('message', function(Message) {
 		console.log('Message Received: ', Message);
 
-		// Broadcast message to all connected user including the sender.
-		Message.timeStamp = moment().valueOf();
-		//io.emit('message', Message);
-		// to broadcast message to all in the room.
-		io.to(clientInfo[socket.id].room).emit('message', Message);
+		if (Message.text === "@currentusers") {
+			sendCurrentUsers(socket);
+		} else {
+			// Broadcast message to all connected user including the sender.
+			Message.timeStamp = moment().valueOf();
+			//io.emit('message', Message);
+			// to broadcast message to all in the room.
+			io.to(clientInfo[socket.id].room).emit('message', Message);
 
-		// Brodcast message to all connected user excluding the sender.
-		//socket.broadcast.emit('message', Message);
+			// Brodcast message to all connected user excluding the sender.
+			//socket.broadcast.emit('message', Message);	
+		}
 	});
 
 	socket.emit('Welcomemessage', {
