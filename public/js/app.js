@@ -20,21 +20,27 @@ socket.on('Welcomemessage', function(message) {
 	var momentTimeStamp = moment.utc(message.timeStamp);
 	var finalTimeStamp = momentTimeStamp.local().format('MMM Do YYYY, h:mm a');
 	//console.log('Welcome message: ', message.text);
-	var $welcomemessage = $(".welcomeMessage");
-	$welcomemessage.append('<p><strong>' + message.name + ' ' + finalTimeStamp + '</strong></p>');
+	var $welcomemessages = $(".welcomeMessage");
+	var $welcomemessage = $('<li class="list-group-item list-group-item-info"></li>');
+
+	$welcomemessage.append('<strong>' + message.name + '</strong><span class="badge">' + finalTimeStamp + '</span>');
 	$welcomemessage.append('<p>' + message.text + '</p>');
 	//$(".welcomeMessage").html('<strong>' + finalTimeStamp + ': </strong>' + message.text);
+
+	$welcomemessages.append($welcomemessage);
 });
 
 socket.on('message', function(message) {
 	var momentTimeStamp = moment.utc(message.timeStamp);
 	var finalTimeStamp = momentTimeStamp.local().format('h:mm a');
-	var $message = $(".messages");
+	var $messages = $(".messages");
+	var $message = $('<li class="list-group-item"></li>');
 
 	//console.log('message: ', message.text);
 
-	$message.append('<p><strong>' + message.name + ' ' + finalTimeStamp + '</strong></p>');
-	$message.append('<p>' + message.text + '</p>');
+	$message.append('<strong>' + message.name + '</strong><span class="badge">' + finalTimeStamp + '</span>');
+	$message.append('<p>' + message.text + '</p></li>');
+	$messages.append($message);
 	//$(".messages").append('<p><strong>' + finalTimeStamp + ': </strong>' + message.text + '</p>');
 });
 
